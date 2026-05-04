@@ -12,3 +12,39 @@ Table: nodes
 """
 
 # TODO: Implement your SQLAlchemy model here
+from sqlalchemy import String, VARCHAR, Integer, TIMESTAMP, func
+
+from sqlalchemy.orm import Mapped, mapped_column
+from datetime import datetime
+from database import Base
+
+class Nodes(Base):
+    __tablename__ = "nodes"
+
+    id: Mapped[int] = mapped_column(Integer,  
+                                    primary_key=True, 
+                                    autoincrement=True)
+    
+    name: Mapped[str] = mapped_column(String,
+                                      unique=True, 
+                                      nullable=False)
+
+    host: Mapped[str] = mapped_column(String,
+                                      nullable=False)
+
+    port: Mapped[int] = mapped_column(Integer,
+                                      nullable=False)
+    
+    status: Mapped[str] = mapped_column(VARCHAR,
+                                         default="active", 
+                                         server_default="active")
+
+    created_at: Mapped[datetime] = mapped_column(TIMESTAMP,
+                                                  default=func.now(), 
+                                                 server_default=func.now())
+    
+    updated_at: Mapped[datetime] = mapped_column(TIMESTAMP, 
+                                                 default=func.now(), 
+                                                 server_default=func.now()
+                                                 , onupdate=func.now())
+                                
