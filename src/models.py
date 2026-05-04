@@ -12,27 +12,27 @@ Table: nodes
 """
 
 # TODO: Implement your SQLAlchemy model here
-from sqlalchemy import String, VARCHAR, Integer, TIMESTAMP, func
+from sqlalchemy import VARCHAR, TIMESTAMP, func,INTEGER
 
 from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
-from database import Base
+from src.database import Base
 
 class Nodes(Base):
     __tablename__ = "nodes"
 
-    id: Mapped[int] = mapped_column(Integer,  
+    id: Mapped[int] = mapped_column(INTEGER,  
                                     primary_key=True, 
                                     autoincrement=True)
     
-    name: Mapped[str] = mapped_column(String,
+    name: Mapped[str] = mapped_column(VARCHAR,
                                       unique=True, 
                                       nullable=False)
 
-    host: Mapped[str] = mapped_column(String,
+    host: Mapped[str] = mapped_column(VARCHAR,
                                       nullable=False)
 
-    port: Mapped[int] = mapped_column(Integer,
+    port: Mapped[int] = mapped_column(INTEGER,
                                       nullable=False)
     
     status: Mapped[str] = mapped_column(VARCHAR,

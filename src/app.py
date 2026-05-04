@@ -1,28 +1,12 @@
-"""
-Exercise 01 — Node Registry API
-
-Implement a FastAPI application with the following endpoints:
-
-GET    /health          → health check with DB status
-POST   /api/nodes       → register a new node
-GET    /api/nodes       → list all nodes
-GET    /api/nodes/{name} → get a node by name
-PUT    /api/nodes/{name} → update a node
-DELETE /api/nodes/{name} → soft-delete a node (set status=inactive)
-
-See README.md for full specification.
-"""
-
-# TODO: Implement your FastAPI app here
 from fastapi import FastAPI, HTTPException, status, Depends
-from schemas import NodeCreate, NodeResponse, NodeUpdate, HealthResponse
+from src.schemas import NodeCreate, NodeResponse, NodeUpdate, HealthResponse
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
-from database import get_db, init_db
-from models import Nodes
+from src.database import get_db, init_db
+from src.models import Nodes
 from sqlalchemy import exc, delete, update, select, func, insert
 import uvicorn
-
+from typing import List
 
 
 app = FastAPI()
@@ -66,7 +50,7 @@ def register_node(query: NodeCreate, db:Session =Depends(get_db)):
     return nuevo_nodo
 
 
-@app.get("/api/nodes" ,status_code= status.HTTP_200_OK)
+@app.get("/api/nodes" ,status_code= status.HTTP_200_OK, response_model=List[NodeResponse])
 def list_nodes(db:Session = Depends(get_db)):
     all_nodes = db.query(Nodes).all()
     nodesResponse = []
@@ -95,8 +79,6 @@ def update_node(name: str, updated: NodeUpdate, db:Session =Depends(get_db)):
     if (node is None):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Node not found")
     
-
-
     for key, value in update_data.items():
         setattr(node, key, value)
 
@@ -120,5 +102,5 @@ def delete_node(name: str, db:Session =Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Node not found")
     node.status = "inactive"
     db.commit()
-    return JSONResponse(status_code=status.HTTP_204_NO_CONTENT, content="")
+    return 
 

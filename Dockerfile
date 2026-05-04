@@ -30,14 +30,16 @@ LABEL org.opencontainers.image.authors="Esteban Viani <eviani94@hotmail.com>"
 WORKDIR /app
 
 RUN groupadd -r appgroup && useradd -r -g appgroup appuser
+
 COPY --from=build --chown=appuser:appgroup /deps /deps 
-COPY --chown=appuser:appgroup src /app
+
+COPY --chown=appuser:appgroup . .
 USER appuser
 
-ENV PYTHONPATH=/deps
+ENV PYTHONPATH=/app:/deps
 ENV PATH="/deps/bin:$PATH"
 
 EXPOSE 8080
 HEALTHCHECK --interval=30s CMD "curl -f http://localhost:8080/health" || exit 1
 
-CMD [ "uvicorn","app:app","--host", "0.0.0.0", "--port", "8080"]
+CMD [ "uvicorn","src.app:app","--host", "0.0.0.0", "--port", "8080", "--reload"]

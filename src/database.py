@@ -1,12 +1,3 @@
-"""
-Database connection and session management.
-
-Read DATABASE_URL from environment variable.
-Create SQLAlchemy engine and session.
-Provide a dependency for FastAPI to get a DB session.
-"""
-
-# TODO: Implement database connection here
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
