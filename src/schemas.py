@@ -8,8 +8,8 @@ NodeResponse: for API responses (includes id, status, timestamps)
 
 # TODO: Implement your Pydantic schemas here
 
-from pydantic import BaseModel
-from typing import Optional
+from pydantic import BaseModel, Field, field_validator
+from typing import Optional, List
 from datetime import datetime
 
 class NodeCreate(BaseModel):
@@ -19,9 +19,9 @@ class NodeCreate(BaseModel):
         - host 
         - port
     """
-    name:str
-    host:str
-    port:int
+    name:str = Field(..., min_length=1)
+    host:str = Field(..., min_length=1)
+    port:int = Field(..., gt=0, lt=65536)
 
 class NodeUpdate(BaseModel):
     """
@@ -29,8 +29,9 @@ class NodeUpdate(BaseModel):
         - host 
         - port| None
     """
-    host:str
-    port: Optional[str]
+    host: Optional[str] = Field(default=None, min_length=1)
+    port: int | None = Field(default=None, gt=1, lt=65536)
+
 
 class NodeResponse(BaseModel):
     """
@@ -49,7 +50,10 @@ class NodeResponse(BaseModel):
     port: int
     status: str
     created_at: datetime
-    update_at: datetime
+    updated_at: datetime
+
+    class Config:
+        from_attributes=True
 
 class HealthResponse(BaseModel):
     """
